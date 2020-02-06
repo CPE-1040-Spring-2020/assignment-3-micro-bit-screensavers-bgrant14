@@ -198,16 +198,39 @@ function rain() {
     }
 }
 
-let interval: number = 200
-function wave() {
-    let wave = images.createBigImage(
-        `. . . . . . . . . . . . .
-            . . . . . . . # # . . . .
-            . . . . . . # # . # . . .
-            # . # . # # # # . . . . .
-            # # # # # # # # # # # # #`)
-    wave.scrollImage(-1, 200)
+class wave {
+    height: number
+    constructor() {
+        this.height = Math.randomRange(2, 4)
+    }
+    scroll() {
+        for (let i: number = 0; i < 2; i++) {
+            basic.clearScreen()
+            for (let j: number = 0; j < 5; j++) {
+                if (i % 2 == 0) {
+                    if (j % 2 == 0) {
+                        led.plot(j, 4)
+                        led.plotBrightness(j, 3, 128)
+                    } else {
+                        led.plot(j, 4)
+                    }
+                } else {
+                    if (j % 2 == 0) {
+                        led.plot(j, 4)
+                    } else {
+                        led.plot(j, 4)
+                        led.plotBrightness(j, 3, 128)
+                    }
+                }
+            }
+            basic.pause(250)
+        }
+    }
+    makeWave() {
+        
+    }
 }
+let newWave = new wave()
 
 /*class fillOpts {
     constructor () {}
@@ -372,7 +395,7 @@ basic.forever(function () {
                 rain()
                 break;
             case 1:
-                wave()
+                newWave.scroll()
                 break;
             case 2:
                 fillUnfill()
