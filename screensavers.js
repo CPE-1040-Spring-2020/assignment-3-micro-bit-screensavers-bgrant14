@@ -108,28 +108,96 @@ function wave() {
     wave.scrollImage(-1, 200)
 }
 
+/*class fillOpts {
+    constructor () {}
+    fill (cycle: number, coordinates: number, pTime: number) {
+        for (let i = 0; i < )
+    }
+}*/
+
 function fillRand(fill: boolean) {
-    let init: number[][] =
-        [[Math.randomRange(0, 4), Math.randomRange(0, 4)],
-        [Math.randomRange(0, 4), Math.randomRange(0, 4)],
-        [Math.randomRange(0, 4), Math.randomRange(0, 4)],
-        [Math.randomRange(0, 4), Math.randomRange(0, 4)]]
     if (fill) {
-        led.plot(init[0][0], init[0][1])
-        led.plot(init[1][0], init[1][1])
-        led.plot(init[2][0], init[2][1])
-        led.plot(init[3][0], init[3][1])
-        basic.pause(100)
+        for (let i: number = 0; i < 4; i++) led.plot(Math.randomRange(0, 4), Math.randomRange(0, 4))
+        basic.pause(10)
     } else {
-        led.unplot(init[0][0], init[0][1])
-        led.unplot(init[1][0], init[1][1])
-        led.unplot(init[2][0], init[2][1])
-        led.unplot(init[3][0], init[3][1])
-        basic.pause(100)
+        for (let i: number = 0; i < 4; i++) led.unplot(Math.randomRange(0, 4), Math.randomRange(0, 4))
+        basic.pause(10)
     }
 }
 
-function isFull() {
+function fillLines(fill: boolean) {
+    if (fill) {
+        for (let i: number = 0; i < 5; i++) {
+            for (let j: number = 0; j < 5; j++) {
+                if (j % 2 == 0) {
+                    led.plot(i, j)
+                } else {
+                    led.plot(4 - i, j)
+                }
+            }
+            basic.pause(250)
+        }
+    } else {
+        for (let i: number = 0; i < 5; i++) {
+            for (let j: number = 0; j < 5; j++) {
+                if (j % 2 == 0) {
+                    led.unplot(i, j)
+                } else {
+                    led.unplot(4 - i, j)
+                }
+            }
+            basic.pause(250)
+        }
+    }
+}
+
+function fillSquares(fill: boolean) {
+    if (fill) {
+        for (let i: number = 0; i < 5; i++) {
+            for (let j: number = 0; j < 5 - i; j++) {
+                led.plot(i, j)
+                led.plot(j, i)
+                led.plot(4 - i, j)
+                led.plot(j, 4 - i)
+            }
+            basic.pause(250)
+        }
+    } else {
+        for (let i: number = 0; i < 5; i++) {
+            for (let j: number = 0; j < 5 - i; j++) {
+                led.unplot(i, j)
+                led.unplot(j, i)
+                led.unplot(4 - i, j)
+                led.unplot(j, 4 - i)
+            }
+            basic.pause(250)
+        }
+    }
+}
+
+function fillSweep(fill: boolean) {
+    if (fill) {
+        for (let i: number = 0; i < 5; i++) led.plot(i, i)
+        for (let i: number = 1; i < 5; i++) {
+            for (let j: number = 0; j < i; j++) {
+                led.plot(j, i)
+                led.plot(4 - j, 4 - i)
+            }
+            basic.pause(250)
+        }
+    } else {
+        for (let i: number = 0; i < 5; i++) led.unplot(i, i)
+        for (let i: number = 1; i < 5; i++) {
+            for (let j: number = 0; j < i; j++) {
+                led.unplot(j, i)
+                led.unplot(4 - j, 4 - i)
+            }
+            basic.pause(250)
+        }
+    }
+}
+
+function full(): boolean {
     for (let i: number = 0; i < 5; i++) {
         for (let j: number = 0; j < 5; j++) {
             if (!led.point(i, j)) return false
@@ -138,24 +206,50 @@ function isFull() {
     return true
 }
 
+function empty(): boolean {
+    for (let i: number = 0; i < 5; i++) {
+        for (let j: number = 0; j < 5; j++) {
+            if (led.point(i, j)) return false
+        }
+    }
+    return true
+}
+
+let fillStatus: boolean = false
 function fillUnfill() {
-    let selection: number = 0
-    if (!isFull()) {
+    let selection: number = Math.randomRange(0, 3)
+    if (!full() && !fillStatus) {
         switch (selection) {
             case 0:
                 fillRand(true)
                 break;
             case 1:
+                fillLines(true)
+                break;
+            case 2:
+                fillSquares(true)
+                break;
+            case 3:
+                fillSweep(true)
                 break;
         }
+        if (full()) fillStatus = true
     } else {
         switch (selection) {
             case 0:
                 fillRand(false)
                 break;
             case 1:
+                fillLines(false)
+                break;
+            case 2:
+                fillSquares(false)
+                break;
+            case 3:
+                fillSweep(false)
                 break;
         }
+        if (empty()) fillStatus = false
     }
 }
 
