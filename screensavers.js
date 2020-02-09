@@ -1,6 +1,10 @@
 let scrSel = 0      //screensaver selection
 let asleep = false  //sleep state
 
+/*
+ *  Main Screen - Snake Game
+ */
+
 let difficulty: number = 500
 class snake {
     path: number[] = []
@@ -91,6 +95,10 @@ class snake {
 }
 let sGame = new snake()
 
+/*
+ *  Button Handling:
+ */
+
 // When the A button is pressed and held for 2
 // seconds, sleeps
 input.onButtonPressed(Button.A, function () {
@@ -121,6 +129,15 @@ input.onGesture(Gesture.TiltRight, function () {
     scrSel = 2
 })
 
+input.onGesture(Gesture.LogoUp, function () {
+    scrSel = 3
+})
+
+
+/*
+ *  Rain Screensaver:
+ */
+
 // Nodes for linked list
 class dropNode {
     dropX: number
@@ -136,6 +153,7 @@ class dropNode {
         this.nextDrop = null
     }
 }
+
 class droplets {
     head: dropNode
     constructor() {
@@ -173,11 +191,7 @@ class droplets {
             current = current.nextDrop
         }
     }
-    delSprites() {
-        let current = this.head
-        while (current.nextDrop) {
-            current = current.nextDrop
-        }
+    delDrops() {
         this.head = null
     }
 }
@@ -194,15 +208,17 @@ function rain() {
         rain.fall()
     }
     if (scrSel != 0) {
-        rain.delSprites()
+        rain.delDrops()
     }
 }
 
+
+/*
+ *  Waves Screensaver:
+ */
+
 class wave {
-    height: number
-    constructor() {
-        this.height = Math.randomRange(2, 4)
-    }
+    constructor() { }
     scroll() {
         for (let i: number = 0; i < 2; i++) {
             basic.clearScreen()
@@ -226,11 +242,44 @@ class wave {
             basic.pause(250)
         }
     }
-    makeWave() {
-        
+    makeWave(height: number) {
+        for (let i = 0; i < 4; i++) {
+            this.scroll()
+        }
+        for (let i = 1; i < 5; i++) {
+            led.unplot(i, 3)
+            led.unplot(i + 2, 3)
+            led.plotBrightness(i + 1, 3, 128)
+            led.plotBrightness(i + 3, 3, 128)
+            basic.pause(250)
+        }
+        for (let i = 0; i < 8; i++) {
+            if (i > 2) height--
+            led.plot(i, 4 - height)
+            led.plot(i - 1, 4 - height - 1)
+            led.plot(i - 1, 4 - height)
+            led.plot(i - 2, 4 - height)
+            led.plot(i - 2, 4 - height + 1)
+            led.plot(i - 2, 4 - height + 2)
+            led.plot(i - 3, 4 - height + 1)
+            basic.pause(250)
+            led.unplot(i, 4 - height)
+            led.unplot(i - 1, 4 - height - 1)
+            led.unplot(i - 1, 4 - height)
+            led.unplot(i - 2, 4 - height)
+            led.unplot(i - 2, 4 - height + 1)
+            led.unplot(i - 2, 4 - height + 2)
+            led.unplot(i - 3, 4 - height + 1)
+            for (let j = 0; j < 5; j++) led.plot(j, 4)
+        }
     }
 }
 let newWave = new wave()
+
+
+/*
+ *  Fill-Unfill Screensaver:
+ */
 
 /*class fillOpts {
     constructor () {}
@@ -384,21 +433,65 @@ function fillUnfill() {
     }
 }
 
+function dispPi(fraction: number) {
+    basic.clearScreen()
+    led.plot(3, 0)
+    led.plot(4, 0)
+    for (let i = 1; i < 5; i++) {
+        for (let j = 0; j < 5; j++) {
+            fraction *= 2
+            if (fraction > 1) {
+                fraction -= 1
+                led.plot(j, i)
+            }
+        }
+    }
+}
+
+function nilakanthaPi() {
+    let piFrac: number = 0, sign = 1
+    for (let i = 2; i < 300; i += 2) {
+        piFrac = piFrac + sign * (4 / (i * (i + 1) * (i + 2)))
+        sign = -sign
+        dispPi(piFrac)
+        basic.pause(100)
+    }
+    basic.pause(2000)
+}
+
+//function diplay
+
+/*
+ *  Forever Loop:
+ */
+
+let t0: number, t1: number, track: boolean
 basic.forever(function () {
     if (!asleep) {
+        track = true
         game.resume()
         sGame.slither()
         if (asleep) game.pause()
+        /*if (!input.buttonIsPressed(Button.A)) track = false
+        if (input.buttonIsPressed(Button.A)) {
+            t0 = input.runningTimeMicros()
+            sGame.turnLeft()
+        }
+        if (input.buttonIsPressed(Button.A) && track) t1 = input.runningTimeMicros()
+        if (t1 - t0 >= 2000) asleep = true*/
     } else {
         switch (scrSel) {
             case 0:
                 rain()
                 break;
             case 1:
-                newWave.scroll()
+                newWave.makeWave(Math.randomRange(2, 3))
                 break;
             case 2:
                 fillUnfill()
+                break;
+            case 3:
+                nilakanthaPi()
                 break;
         }
     }
