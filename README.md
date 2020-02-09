@@ -124,7 +124,16 @@ This assignnment is more involved than the first two, but uses the same basic mi
 
 ## Screensavers
 
-_TODO: Add your screensaver descriptions!!!_
+_1. Rain:_ Creates 1-3 drops at random x-coordinates and with random brightnesses at the top of the screen and moves them down the screen. Stores the coordinates and brightness values in a linked list.
+
+_2. Rocket:_ Animates a rocket taking off, flying through space, then landing. Reuses code for the rain screensaver as stars.
+
+_3. Fill/Unfill:_ Continuously fills and empties the screen of lit LEDs, randomly switching between filling and unfilling randomly, moving lines in opposite directions across the screen, using concentric squares, and sweeping across diagonal planes.
+
+_4. Nilakantha Pi:_ The Nilakantha series is used to calculate pi and each successive result is displayed on the screen in binary until the result is correct. The top row shows two lit LEDs representing 3, and the remaining rows show the fractional portion of pi.
+
+_5. Wave:_ Animates waves moving back and forth, and a larger wave (of a varied height) that moves across the screen. 
+
 
 ## Demo video
 
